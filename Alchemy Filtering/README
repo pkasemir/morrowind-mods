@@ -1,25 +1,29 @@
-[size=5]Description[/size][hr]
+[size=5]Description[/size]
 This Mod improves the potion brewing interface to help you find the right ingredients to make your potion. Once you collect lots of ingredients and have a high alchemy level, which lets you see multiple effects, then finding the right ingredients to match and make potions becomes a real chore. This Mod lets you select an ingredient and then find ingredients with matching effects. Or you can choose your effect first and filter the ingredients which have that effect.
 
-[size=5]Requirements[/size][hr]
+[size=5]Requirements[/size]
+[list]
 [*] MWSE
-
-[size=5]Features[/size][hr]
+[/list]
+[size=5]Features[/size]
+[list]
 [*] A LUA script that runs with MWSE and is very easy to install
 [*] Alchemy potions and effects are the same as vanilla
 [*] Modifies the Alchemy Menu to choose effects and filter ingredients
-
-[size=5]Installation[/size][hr]
+[/list]
+[size=5]Installation[/size]
 Copy [i]Data Files[/i] into your Morrowind install directory.
 Or use the Mod Manager download.
 
-[size=5]Usage[/size][hr]
+[size=5]Usage[/size]
 Ingredient filtering is automatically done when you select the first ingredient. Secondary ingredients will be filtered to have matching effects, based on how many effects you can see with your current Alchemy level
 
 You can also filter by choosing a specific effect. Click [i]Choose Effects[/i] button to show an integrated panel which lets you choose the effect based on name and only shows the effects for which you know you can create.
 
 You can turn on and off the mod in-game using the Mod Config menu.
 
-[size=5]Credits[/size][hr]
+[size=5]Credits[/size]
+[list]
 [*] [b][url=https://www.nexusmods.com/morrowind/mods/44808]mwse Alchemy Filter[/url][/b] - for the basic idea of filter, but I wanted a different interface
 [*] [b][url=https://www.nexusmods.com/morrowind/mods/49036]Alchemical Knowledge[/url][/b] - for a good starting point for LUA scripts since it also integrates with the Alchemy brewing menu
+[/list]
