@@ -156,11 +156,11 @@ end
 
 local function registerGUI()
 	-- Standard MenuAlchemy registered names
-	GUI_ID.potion_name = tes3ui.registerID("MenuAlchemy_potion_name")
-	GUI_ID.mortar_slot = tes3ui.registerID("MenuAlchemy_mortar_slot")
-	GUI_ID.alembic_slot = tes3ui.registerID("MenuAlchemy_alembic_slot")
-	GUI_ID.calcinator_slot = tes3ui.registerID("MenuAlchemy_calcinator_slot")
-	GUI_ID.retort_slot = tes3ui.registerID("MenuAlchemy_retort_slot")
+	-- GUI_ID.potion_name = tes3ui.registerID("MenuAlchemy_potion_name")
+	-- GUI_ID.mortar_slot = tes3ui.registerID("MenuAlchemy_mortar_slot")
+	-- GUI_ID.alembic_slot = tes3ui.registerID("MenuAlchemy_alembic_slot")
+	-- GUI_ID.calcinator_slot = tes3ui.registerID("MenuAlchemy_calcinator_slot")
+	-- GUI_ID.retort_slot = tes3ui.registerID("MenuAlchemy_retort_slot")
 	GUI_ID.ingredient = {
 		tes3ui.registerID("MenuAlchemy_ingredient_one"),
 		tes3ui.registerID("MenuAlchemy_ingredient_two"),
@@ -169,9 +169,7 @@ local function registerGUI()
 	}
 	GUI_ID.effectarea = tes3ui.registerID("MenuAlchemy_effectarea")
 	GUI_ID.create_button = tes3ui.registerID("MenuAlchemy_create_button")
-	GUI_ID.cancel_button = tes3ui.registerID("MenuAlchemy_cancel_button")
-
-	GUI_ID.PartScrollPane_pane = tes3ui.registerID("PartScrollPane_pane")
+	-- GUI_ID.cancel_button = tes3ui.registerID("MenuAlchemy_cancel_button")
 
 	-- Mod MenuAlchemy registered names
 	GUI_ID.choose_effects_button = tes3ui.registerID("AF:MenuAlchemy_choose_effects_button")
@@ -320,10 +318,6 @@ local function uiTextCompare(a, b)
 	return a.text < b.text
 end
 
-local function getScrollPaneInner(pane)
-	return pane:findChild(GUI_ID.PartScrollPane_pane)
-end
-
 --- Updates the active item in the given pane<br>
 --- If item is nil, then deactivates any ative item<br>
 --- If item is valid, then toggles that active state, deactivating other active items
@@ -360,7 +354,7 @@ function chooser:onChooserTextClick(effectText)
 	if paneId == self.chooseEffectsLeft.id then
 		self.chooseEffectsRight.visible = isActivated
 		self:updateActivatedColor(self.chooseEffectsRight.id, nil)
-		getScrollPaneInner(self.chooseEffectsRight):destroyChildren()
+		self.chooseEffectsRight:getContentElement():destroyChildren()
 		if #effectList == 1 then
 			self.chooseEffectsRight.visible = false
 		end
@@ -378,7 +372,7 @@ function chooser:onChooserTextClick(effectText)
 					effect = effectRight
 				end
 			end
-			getScrollPaneInner(self.chooseEffectsRight):sortChildren(uiTextCompare)
+			self.chooseEffectsRight:getContentElement():sortChildren(uiTextCompare)
 		end
 	end
 	if isActivated then
@@ -399,8 +393,8 @@ function chooser:createUi()
 	self.chooseBlock.visible = true
 	if self.chooseEffectsLeft then
 		-- Already created, so just update the contents
-		getScrollPaneInner(self.chooseEffectsLeft):destroyChildren()
-		getScrollPaneInner(self.chooseEffectsRight):destroyChildren()
+		self.chooseEffectsLeft:getContentElement():destroyChildren()
+		self.chooseEffectsRight:getContentElement():destroyChildren()
 	else
 		-- Need to create the left and right panes
 		self.chooseEffectsLeft = self.chooseBlock:createVerticalScrollPane{id = GUI_ID.choose_effects_left}
@@ -434,7 +428,7 @@ function chooser:createUi()
 			self:onChooserTextClick(effectElement.text)
 		end
 	end
-	getScrollPaneInner(self.chooseEffectsLeft):sortChildren(uiTextCompare)
+	self.chooseEffectsLeft:getContentElement():sortChildren(uiTextCompare)
 	self.menu:updateLayout()
 end
 
