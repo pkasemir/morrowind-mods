@@ -2,6 +2,7 @@ local log = mwse.Logger.new()
 log.level = "DEBUG"
 local strings = require("alchemyFiltering.strings")
 local config = require("alchemyFiltering.config")
+local selecter = require("alchemyFiltering.selecter")
 
 local GUI_ID = {}
 local chooser = {
@@ -154,8 +155,7 @@ function IconText:setText(text)
 end
 
 local function registerGUI()
-	-- Standard registered names
-	GUI_ID.MenuAlchemy = tes3ui.registerID("MenuAlchemy")
+	-- Standard MenuAlchemy registered names
 	GUI_ID.potion_name = tes3ui.registerID("MenuAlchemy_potion_name")
 	GUI_ID.mortar_slot = tes3ui.registerID("MenuAlchemy_mortar_slot")
 	GUI_ID.alembic_slot = tes3ui.registerID("MenuAlchemy_alembic_slot")
@@ -173,8 +173,7 @@ local function registerGUI()
 
 	GUI_ID.PartScrollPane_pane = tes3ui.registerID("PartScrollPane_pane")
 
-	-- Mod registered names
-	GUI_ID.MenuAlchemyChooseEffect = tes3ui.registerID("AF:MenuAlchemyChooseEffect")
+	-- Mod MenuAlchemy registered names
 	GUI_ID.choose_effects_button = tes3ui.registerID("AF:MenuAlchemy_choose_effects_button")
 	GUI_ID.choose_effects_block = tes3ui.registerID("AF:MenuAlchemy_choose_effects_block")
 	GUI_ID.choose_effects_left = tes3ui.registerID("AF:MenuAlchemy_choose_effects_left")
@@ -202,7 +201,7 @@ local function logTree(parent, indent)
 							"paddingBottom", "paddingLeft", "paddingRight", "paddingTop",
 							"borderAllSides", "borderBottom", "borderLeft", "borderRight", "borderTop"}) do
 			if c[k] then
-				log:debug("  " .. indent .. "child[" .. k .. "] = " .. tostring(c[k]))
+				-- log:debug("  " .. indent .. "child[" .. k .. "] = " .. tostring(c[k]))
 			end
 		end
 
@@ -252,7 +251,7 @@ end
 
 local function onTestClick(e)
 	log:debug("onTestClick")
-	local menu = tes3ui.findMenu(GUI_ID.MenuAlchemy)
+	local menu = tes3ui.findMenu("MenuAlchemy")
 	logTree(menu)
 end
 
@@ -556,6 +555,7 @@ local function onAlchemyRaised()
 end
 
 function chooser:mergeWithMenuAlchemy(menu)
+	if not menu then return end
 	self.menu = menu
 	self.visibleEffectsCount = getVisibleEffectsCount()
 	self.menu:register("destroy", function() self:uiDestroyed(true) end)
@@ -623,6 +623,12 @@ local function onMenuAlchemy(e)
 	chooser:mergeWithMenuAlchemy(e.element)
 end
 
+local function onMenuInventorySelect(e)
+	if not config.modEnabled then return end
+	if not e.newlyCreated then return end
+	selecter:mergeWithMenuInventorySelect(e.element)
+end
+
 local function onLoaded(e)
 	tes3.player.data.alchemyFiltering = tes3.player.data.alchemyFiltering or {}
 	chooser.data = tes3.player.data.alchemyFiltering
@@ -631,18 +637,20 @@ end
 local function onModConfigEntryClosed()
 	if config.modEnabled then
 		if not chooser.menu then
-			local menu = tes3ui.findMenu(GUI_ID.MenuAlchemy)
-			if menu then
-				chooser:mergeWithMenuAlchemy(menu)
-			end
+			chooser:mergeWithMenuAlchemy(tes3ui.findMenu("MenuAlchemy"))
+		end
+		if not selecter.menu then
+			selecter:mergeWithMenuInventorySelect(tes3ui.findMenu("MenuInventorySelect"))
 		end
 	else
 		chooser.data.active = false
 		chooser:detachFromMenuAlchemy()
+		selecter:detachFromMenuInventorySelect()
 	end
 end
 
 local function onInitialized(e)
+	selecter:init()
 	if config.modEnabled then
 		log:debug("enabled")
 	else
@@ -652,6 +660,7 @@ local function onInitialized(e)
 	event.register("loaded", onLoaded)
 	event.register("modConfigEntryClosed", onModConfigEntryClosed, {filter = strings.mcm.modName})
 	event.register("uiActivated", onMenuAlchemy, {filter = "MenuAlchemy"})
+	event.register("uiActivated", onMenuInventorySelect, {filter = "MenuInventorySelect"})
 	event.register("filterInventorySelect", onFilterInventorySelect)
 	event.register("potionBrewed", onPotionAttempted)
 	event.register("potionBrewFailed", onPotionAttempted)

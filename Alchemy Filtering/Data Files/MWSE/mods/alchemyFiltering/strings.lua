@@ -2,6 +2,12 @@ local strings = {
 	chooseEffects = "Choose Effects",
 	filterMatchingEffects = "Filter matching effects",
 	filteringEffect = "Filtering Effect:",
+
+	sortBy = "Sort By:",
+	sortName = "Name",
+	sortCount = "Count",
+	sortWeight = "Weight",
+	sortValue = "Value",
 }
 
 strings.mcm = {
