@@ -9,29 +9,29 @@ local selecter = require("alchemyFiltering.selecter")
 -- debugging when your character gains alchemy skill causing more effects
 -- to be visible, thus repopulating the chooser panes
 local function onAlchemyRaised()
-	if not config.modEnabled then return end
-	log:debug("Alchemy raised")
+    if not config.modEnabled then return end
+    log:debug("Alchemy raised")
 
-	-- log:debug("Bump to skill 61")
-	-- tes3.mobilePlayer.alchemy.current = 61
+    -- log:debug("Bump to skill 61")
+    -- tes3.mobilePlayer.alchemy.current = 61
 end
 
 local function onModConfigEntryClosed()
-	chooser:onModConfigEntryClosed()
-	selecter:onModConfigEntryClosed()
+    chooser:onModConfigEntryClosed()
+    selecter:onModConfigEntryClosed()
 end
 
 local function onInitialized(e)
-	chooser:init()
-	selecter:init()
-	if config.modEnabled then
-		log:debug("enabled")
-	else
-		log:debug("disabled")
-		chooser.data.active = false
-	end
-	event.register("modConfigEntryClosed", onModConfigEntryClosed, {filter = strings.mcm.modName})
-	-- event.register("skillRaised", onAlchemyRaised, {filter = tes3.skill.alchemy})
+    chooser:init()
+    selecter:init()
+    if config.modEnabled then
+        log:debug("enabled")
+    else
+        log:debug("disabled")
+        chooser.data.active = false
+    end
+    event.register("modConfigEntryClosed", onModConfigEntryClosed, {filter = strings.mcm.modName})
+    -- event.register("skillRaised", onAlchemyRaised, {filter = tes3.skill.alchemy})
 end
 
 event.register("initialized", onInitialized)
