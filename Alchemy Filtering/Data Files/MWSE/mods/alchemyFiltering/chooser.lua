@@ -446,6 +446,22 @@ local function onMenuAlchemy(e)
 	chooser:mergeWithMenuAlchemy(e.element)
 end
 
+function chooser:onModConfigEntryClosed()
+	if config.modEnabled then
+		local menuAlchemy = tes3ui.findMenu("MenuAlchemy")
+		if not menuAlchemy and not config.chosenEffectSticky then
+			self.chosenEffect = nil
+		end
+		if not self.menu then
+			self:mergeWithMenuAlchemy(menuAlchemy)
+		end
+	else
+		self.data.active = false
+        self.chosenEffect = nil
+		self:detachFromMenuAlchemy()
+	end
+end
+
 local function onLoaded(e)
 	tes3.player.data.alchemyFiltering = tes3.player.data.alchemyFiltering or {}
 	chooser.data = tes3.player.data.alchemyFiltering

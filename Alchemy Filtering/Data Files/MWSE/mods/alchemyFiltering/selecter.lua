@@ -164,6 +164,16 @@ local function onMenuInventorySelect(e)
 	selecter:mergeWithMenuInventorySelect(e.element)
 end
 
+function selecter:onModConfigEntryClosed()
+	if config.modEnabled then
+		if not self.menu then
+			self:mergeWithMenuInventorySelect(tes3ui.findMenu("MenuInventorySelect"))
+		end
+	else
+		self:detachFromMenuInventorySelect()
+	end
+end
+
 function selecter:init()
 	if not GUI_ID.loaded then
 		event.register("uiActivated", onMenuInventorySelect, {filter = "MenuInventorySelect"})

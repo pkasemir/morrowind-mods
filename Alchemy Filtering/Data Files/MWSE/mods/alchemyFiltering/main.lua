@@ -17,22 +17,8 @@ local function onAlchemyRaised()
 end
 
 local function onModConfigEntryClosed()
-	if config.modEnabled then
-		local menuAlchemy = tes3ui.findMenu("MenuAlchemy")
-		if not menuAlchemy and not config.chosenEffectSticky then
-			chooser.chosenEffect = nil
-		end
-		if not chooser.menu then
-			chooser:mergeWithMenuAlchemy(menuAlchemy)
-		end
-		if not selecter.menu then
-			selecter:mergeWithMenuInventorySelect(tes3ui.findMenu("MenuInventorySelect"))
-		end
-	else
-		chooser.data.active = false
-		chooser:detachFromMenuAlchemy()
-		selecter:detachFromMenuInventorySelect()
-	end
+	chooser:onModConfigEntryClosed()
+	selecter:onModConfigEntryClosed()
 end
 
 local function onInitialized(e)
