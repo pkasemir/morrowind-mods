@@ -34,35 +34,6 @@ local function registerGUI()
     GUI_ID.loaded = true
 end
 
-function selecter:init()
-    registerGUI()
-    self.sortByName = GUI_ID.inventory_sort_name_button
-    self.sortByCount = GUI_ID.inventory_sort_count_button
-    self.sortByWeight = GUI_ID.inventory_sort_weight_button
-    self.sortByValue = GUI_ID.inventory_sort_value_button
-
-    self.sortInfo = {
-        [self.sortByName] = {
-            baseName = strings.sortName,
-            defaultAscending = true,
-        },
-        [self.sortByCount] = {
-            baseName = strings.sortCount,
-            defaultAscending = false,
-        },
-        [self.sortByWeight] = {
-            baseName = strings.sortWeight,
-            defaultAscending = false,
-        },
-        [self.sortByValue] = {
-            baseName = strings.sortValue,
-            defaultAscending = true,
-        }
-    }
-    self.sorting = self.sortByName
-	self.sortAscending = true
-end
-
 function selecter:compare(a, b)
 	if self.sortAscending then
 		return a < b
@@ -185,6 +156,35 @@ function selecter:uiDestroyed()
 	self.sortCountButton = nil
 	self.sortWeightButton = nil
     self.sortValueButton = nil
+end
+
+function selecter:init()
+    registerGUI()
+    self.sortByName = GUI_ID.inventory_sort_name_button
+    self.sortByCount = GUI_ID.inventory_sort_count_button
+    self.sortByWeight = GUI_ID.inventory_sort_weight_button
+    self.sortByValue = GUI_ID.inventory_sort_value_button
+
+    self.sortInfo = {
+        [self.sortByName] = {
+            baseName = strings.sortName,
+            defaultAscending = true,
+        },
+        [self.sortByCount] = {
+            baseName = strings.sortCount,
+            defaultAscending = false,
+        },
+        [self.sortByWeight] = {
+            baseName = strings.sortWeight,
+            defaultAscending = false,
+        },
+        [self.sortByValue] = {
+            baseName = strings.sortValue,
+            defaultAscending = true,
+        }
+    }
+    self.sorting = self.sortByName
+	self.sortAscending = true
 end
 
 return selecter
