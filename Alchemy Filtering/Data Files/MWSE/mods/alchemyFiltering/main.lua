@@ -460,7 +460,9 @@ function chooser:uiDestroyed(topLevelMenu)
 	-- Clean up filter state
 	self.selectedEffects = nil
 	if topLevelMenu then
-		self.chosenEffect = nil
+		if not config.chosenEffectSticky then
+			self.chosenEffect = nil
+		end
 	else
 		-- setChosenEffect() tries to update UI elements
 		self:setChosenEffect(nil)
@@ -630,8 +632,12 @@ end
 
 local function onModConfigEntryClosed()
 	if config.modEnabled then
+		local menuAlchemy = tes3ui.findMenu("MenuAlchemy")
+		if not menuAlchemy and not config.chosenEffectSticky then
+			chooser.chosenEffect = nil
+		end
 		if not chooser.menu then
-			chooser:mergeWithMenuAlchemy(tes3ui.findMenu("MenuAlchemy"))
+			chooser:mergeWithMenuAlchemy(menuAlchemy)
 		end
 		if not selecter.menu then
 			selecter:mergeWithMenuInventorySelect(tes3ui.findMenu("MenuInventorySelect"))

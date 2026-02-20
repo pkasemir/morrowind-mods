@@ -4,6 +4,7 @@ local strings = require("alchemyFiltering.strings")
 local textHeight = 20
 local defaultConfig = {
 	modEnabled = true,
+	chosenEffectSticky = true,
 	chooserHeight = 12 * textHeight,
 }
 
@@ -22,6 +23,15 @@ local function onModConfigReady()
 	description = strings.mcm.modEnabledDesc,
 	variable = EasyMCM.createTableVariable {
 		id = "modEnabled",
+		table = config
+	}
+	})
+
+	settings:createOnOffButton({
+	label = strings.mcm.chosenEffectSticky,
+	description = strings.mcm.chosenEffectStickyDesc,
+	variable = EasyMCM.createTableVariable {
+		id = "chosenEffectSticky",
 		table = config
 	}
 	})
