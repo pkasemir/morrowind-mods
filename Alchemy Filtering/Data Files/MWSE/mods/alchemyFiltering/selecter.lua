@@ -158,7 +158,16 @@ function selecter:uiDestroyed()
     self.sortValueButton = nil
 end
 
+local function onMenuInventorySelect(e)
+	if not config.modEnabled then return end
+	if not e.newlyCreated then return end
+	selecter:mergeWithMenuInventorySelect(e.element)
+end
+
 function selecter:init()
+	if not GUI_ID.loaded then
+		event.register("uiActivated", onMenuInventorySelect, {filter = "MenuInventorySelect"})
+	end
     registerGUI()
     self.sortByName = GUI_ID.inventory_sort_name_button
     self.sortByCount = GUI_ID.inventory_sort_count_button

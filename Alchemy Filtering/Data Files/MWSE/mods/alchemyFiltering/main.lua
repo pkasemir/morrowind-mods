@@ -16,12 +16,6 @@ local function onAlchemyRaised()
 	-- tes3.mobilePlayer.alchemy.current = 61
 end
 
-local function onMenuInventorySelect(e)
-	if not config.modEnabled then return end
-	if not e.newlyCreated then return end
-	selecter:mergeWithMenuInventorySelect(e.element)
-end
-
 local function onModConfigEntryClosed()
 	if config.modEnabled then
 		local menuAlchemy = tes3ui.findMenu("MenuAlchemy")
@@ -51,7 +45,6 @@ local function onInitialized(e)
 		chooser.data.active = false
 	end
 	event.register("modConfigEntryClosed", onModConfigEntryClosed, {filter = strings.mcm.modName})
-	event.register("uiActivated", onMenuInventorySelect, {filter = "MenuInventorySelect"})
 	-- event.register("skillRaised", onAlchemyRaised, {filter = tes3.skill.alchemy})
 end
 
