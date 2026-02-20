@@ -1,5 +1,9 @@
+local log = mwse.Logger.new()
+log.level = "DEBUG"
 
-local function getVisibleEffectsCount()
+local common = {}
+
+function common:getVisibleEffectsCount()
     local skill = tes3.mobilePlayer.alchemy.current
     local gmst = tes3.findGMST(tes3.gmst.fWortChanceValue)
     return math.clamp(math.floor(skill / gmst.value), 0, 4)
@@ -38,6 +42,7 @@ local skillEffects = getCompoundEffects("Skill")
 
 local FullEffect = {}
 FullEffect.__index = FullEffect
+common.FullEffect = FullEffect
 
 function FullEffect:new(effectId, attributeId, skillId)
 	local effect = {}
@@ -84,7 +89,7 @@ end
 
 function FullEffect:visibleEffects(ingredient)
 	if ingredient then
-		return FullEffect.ingredientIter, ingredient, {i = 0, visibleCount = getVisibleEffectsCount()}
+		return FullEffect.ingredientIter, ingredient, {i = 0, visibleCount = common:getVisibleEffectsCount()}
 	else
 		return function() return nil end
 	end
@@ -92,6 +97,7 @@ end
 
 IconText = {}
 IconText.__index = IconText
+common.IconText = IconText
 
 --- Create a new block holing Icon and Text elements
 ---
@@ -145,7 +151,7 @@ function IconText:setText(text)
 end
 
 --- Print out all the children recursively to examine the arrangement of UI elements
-local function logTree(parent, indent)
+function common:logTree(parent, indent)
 	indent = indent or ""
 	for _, c in ipairs(parent.children) do
 		local t = c.text or "_"
@@ -164,6 +170,8 @@ local function logTree(parent, indent)
 			end
 		end
 
-		logTree(c, indent .. "  ")
+		self:logTree(c, indent .. "  ")
 	end
 end
+
+return common

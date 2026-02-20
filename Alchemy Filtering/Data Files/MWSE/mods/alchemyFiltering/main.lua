@@ -2,6 +2,7 @@ local log = mwse.Logger.new()
 log.level = "DEBUG"
 local strings = require("alchemyFiltering.strings")
 local config = require("alchemyFiltering.config")
+local chooser = require("alchemyFiltering.chooser")
 local selecter = require("alchemyFiltering.selecter")
 
 -- This isn't actually needed for the mod to work, but it is useful for
@@ -41,6 +42,7 @@ local function onModConfigEntryClosed()
 end
 
 local function onInitialized(e)
+	chooser:init()
 	selecter:init()
 	if config.modEnabled then
 		log:debug("enabled")
@@ -48,15 +50,9 @@ local function onInitialized(e)
 		log:debug("disabled")
 		chooser.data.active = false
 	end
-	event.register("loaded", onLoaded)
 	event.register("modConfigEntryClosed", onModConfigEntryClosed, {filter = strings.mcm.modName})
-	event.register("uiActivated", onMenuAlchemy, {filter = "MenuAlchemy"})
 	event.register("uiActivated", onMenuInventorySelect, {filter = "MenuInventorySelect"})
-	event.register("filterInventorySelect", onFilterInventorySelect)
-	event.register("potionBrewed", onPotionAttempted)
-	event.register("potionBrewFailed", onPotionAttempted)
 	-- event.register("skillRaised", onAlchemyRaised, {filter = tes3.skill.alchemy})
-	registerGUI()
 end
 
 event.register("initialized", onInitialized)

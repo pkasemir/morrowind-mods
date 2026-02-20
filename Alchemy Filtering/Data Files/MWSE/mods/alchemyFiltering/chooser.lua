@@ -1,3 +1,11 @@
+local log = mwse.Logger.new()
+log.level = "DEBUG"
+local strings = require("alchemyFiltering.strings")
+local config = require("alchemyFiltering.config")
+local common = require("alchemyFiltering.common")
+
+local FullEffect = common.FullEffect
+local IconText = common.IconText
 
 local GUI_ID = {}
 local chooser = {
@@ -5,6 +13,8 @@ local chooser = {
 }
 
 local function registerGUI()
+    if GUI_ID.loaded then return end
+
 	-- Standard MenuAlchemy registered names
 	-- GUI_ID.potion_name = tes3ui.registerID("MenuAlchemy_potion_name")
 	-- GUI_ID.mortar_slot = tes3ui.registerID("MenuAlchemy_mortar_slot")
@@ -31,6 +41,8 @@ local function registerGUI()
 
 	-- Test related UI elements
 	GUI_ID.test_button = tes3ui.registerID("AF:MenuAlchemy_test_button")
+
+    GUI_ID.loaded = true
 end
 
 function chooser:updateFilteringEffect()
@@ -76,7 +88,7 @@ end
 local function onTestClick(e)
 	log:debug("onTestClick")
 	local menu = tes3ui.findMenu("MenuAlchemy")
-	logTree(menu)
+	common:logTree(menu)
 end
 
 local function getMenuAlchemySlotIngredients()
@@ -341,7 +353,7 @@ local function onIngredientClick(e)
 end
 
 local function onCreateClick()
-	chooser.visibleEffectsCount = getVisibleEffectsCount()
+	chooser.visibleEffectsCount = common:getVisibleEffectsCount()
 	chooser.slotIngredients = getMenuAlchemySlotIngredients()
 end
 
@@ -357,7 +369,7 @@ local function onPotionAttempted()
 		end
 	end
 	-- Check if we can see more effects
-	local newVisibleEffectsCount = getVisibleEffectsCount()
+	local newVisibleEffectsCount = common:getVisibleEffectsCount()
 	if newVisibleEffectsCount ~= chooser.visibleEffectsCount then
 		chooser.visibleEffectsCount = newVisibleEffectsCount
 		chooser:updateUi()
@@ -368,7 +380,7 @@ end
 function chooser:mergeWithMenuAlchemy(menu)
 	if not menu then return end
 	self.menu = menu
-	self.visibleEffectsCount = getVisibleEffectsCount()
+	self.visibleEffectsCount = common:getVisibleEffectsCount()
 	self.menu:register("destroy", function() self:uiDestroyed(true) end)
 	self.createButton = self.menu:findChild(GUI_ID.create_button)
 	self.createButton:registerBefore("mouseClick", onCreateClick)
@@ -438,3 +450,16 @@ local function onLoaded(e)
 	tes3.player.data.alchemyFiltering = tes3.player.data.alchemyFiltering or {}
 	chooser.data = tes3.player.data.alchemyFiltering
 end
+
+function chooser:init()
+	if not GUI_ID.loaded then
+        event.register("loaded", onLoaded)
+        event.register("uiActivated", onMenuAlchemy, {filter = "MenuAlchemy"})
+        event.register("filterInventorySelect", onFilterInventorySelect)
+        event.register("potionBrewed", onPotionAttempted)
+        event.register("potionBrewFailed", onPotionAttempted)
+    end
+    registerGUI()
+end
+
+return chooser
