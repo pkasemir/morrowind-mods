@@ -197,6 +197,14 @@ function IconText:destroy()
     self.block:destroy()
 end
 
+function common:destroyAll(items)
+    for _, item in pairs(items) do
+        if item then
+            item:destroy()
+        end
+    end
+end
+
 --- Print out all the children recursively to examine the arrangement of UI elements
 function common:logTree(parent, indent)
     indent = indent or ""

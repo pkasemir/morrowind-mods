@@ -391,11 +391,13 @@ function chooser:mergeWithMenuAlchemy(menu)
 end
 
 function chooser:detachFromMenuAlchemy()
-    if self.filterLabel then self.filterLabel:destroy() end
-    if self.filterEffectElement then self.filterEffectElement:destroy() end
-    if self.chooseButton then self.chooseButton:destroy() end
-    if self.chooseBlock then self.chooseBlock:destroy() end
-    if self.testButton then self.testButton:destroy() end
+    common:destroyAll{
+        self.filterLabel,
+        self.filterEffectElement,
+        self.chooseButton,
+        self.chooseBlock,
+        self.testButton,
+    }
 
     if self.menu then
         -- Unhook from ingredient clicks

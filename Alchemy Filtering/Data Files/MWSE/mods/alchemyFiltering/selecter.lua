@@ -251,8 +251,10 @@ function selecter:mergeWithMenuInventorySelect(menu)
 end
 
 function selecter:detachFromMenuInventorySelect()
-    if self.sortBlock then self.sortBlock:destroy() end
-    if self.filterBlock then self.filterBlock:destroy() end
+    common:destroyAll{
+        self.sortBlock,
+        self.filterBlock,
+    }
 
     self.sorting = self.sortByName
     self.sortAscending = true
