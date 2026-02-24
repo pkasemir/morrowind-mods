@@ -36,8 +36,8 @@ local function registerGUI()
     GUI_ID.choose_effects_block = tes3ui.registerID("AF:MenuAlchemy_choose_effects_block")
     GUI_ID.choose_effects_left = tes3ui.registerID("AF:MenuAlchemy_choose_effects_left")
     GUI_ID.choose_effects_right = tes3ui.registerID("AF:MenuAlchemy_choose_effects_right")
-    GUI_ID.filter_label = tes3ui.registerID("AF:MenuAlchemy_filter_label")
-    GUI_ID.filter_effect_label = tes3ui.registerID("AF:MenuAlchemy_filter_effect_label")
+    GUI_ID.chosen_label = tes3ui.registerID("AF:MenuAlchemy_chosen_label")
+    GUI_ID.chosen_effect_block = tes3ui.registerID("AF:MenuAlchemy_chosen_effect_block")
 
     -- Test related UI elements
     GUI_ID.test_button = tes3ui.registerID("AF:MenuAlchemy_test_button")
@@ -45,22 +45,22 @@ local function registerGUI()
     GUI_ID.loaded = true
 end
 
-function chooser:updateFilteringEffect()
+function chooser:updateChosenEffectUi()
     if self.chosenEffect then
-        self.filterEffectElement:setPath(self.chosenEffect.magicEffect.icon)
-        self.filterEffectElement:setText(self.chosenEffect.name)
-        self.filterLabel.visible = true
-        self.filterEffectElement.block.visible = true
+        self.chosenEffectElement:setPath(self.chosenEffect.magicEffect.icon)
+        self.chosenEffectElement:setText(self.chosenEffect.name)
+        self.chosenLabel.visible = true
+        self.chosenEffectElement.block.visible = true
     else
-        self.filterLabel.visible = false
-        self.filterEffectElement.block.visible = false
+        self.chosenLabel.visible = false
+        self.chosenEffectElement.block.visible = false
     end
     self.menu:updateLayout()
 end
 
 function chooser:setChosenEffect(effect)
     self.chosenEffect = effect
-    self:updateFilteringEffect()
+    self:updateChosenEffectUi()
 end
 
 --- Gets all the effects availabled from the 4 possible ingredient slots
@@ -80,7 +80,7 @@ function chooser:getSelectedEffects()
     else
         self.selectedEffects = nil
     end
-    self:updateFilteringEffect()
+    self:updateChosenEffectUi()
 end
 
 local function onTestClick(e)
@@ -285,14 +285,14 @@ function chooser:uiDestroyed(topLevelMenu)
         self.testButton = nil
         self.chooseBlock = nil
         self.chooseButton = nil
-        self.filterLabel = nil
-        self.filterEffectElement = nil
+        self.chosenLabel = nil
+        self.chosenEffectElement = nil
     end
     self.chooseEffectsLeft = nil
     self.chooseEffectsRight = nil
     self.activeTexts = {}
 
-    -- Clean up filter state
+    -- Clean up chosen and selected effects
     self.selectedEffects = nil
     if topLevelMenu then
         if not config.chosenEffectSticky then
@@ -357,11 +357,11 @@ function chooser:mergeWithMenuAlchemy(menu)
     local buttonBlock = self.createButton.parent
 
     local effectarea = self.menu:findChild(GUI_ID.effectarea)
-    self.filterLabel = effectarea.parent:createLabel{id = GUI_ID.filter_label, text = strings.chosenEffect}
+    self.chosenLabel = effectarea.parent:createLabel{id = GUI_ID.chosen_label, text = strings.chosenEffect}
 
-    self.filterEffectElement = IconText:create{parent = effectarea.parent,
+    self.chosenEffectElement = IconText:create{parent = effectarea.parent,
     isLabel = true,
-    id = GUI_ID.filter_effect_label}
+    id = GUI_ID.chosen_effect_block}
 
     self.chooseButton = buttonBlock:createButton{id = GUI_ID.choose_effects_button, text = strings.chooseEffects}
     self.chooseButton:register("mouseClick", onChooseEffects)
@@ -387,13 +387,13 @@ function chooser:mergeWithMenuAlchemy(menu)
     end
 
     chooser:updateUi()
-    chooser:updateFilteringEffect()
+    chooser:updateChosenEffectUi()
 end
 
 function chooser:detachFromMenuAlchemy()
     common:destroyAll{
-        self.filterLabel,
-        self.filterEffectElement,
+        self.chosenLabel,
+        self.chosenEffectElement,
         self.chooseButton,
         self.chooseBlock,
         self.testButton,
