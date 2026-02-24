@@ -99,27 +99,66 @@ IconText = {}
 IconText.__index = IconText
 common.IconText = IconText
 
---- Create a new block holing Icon and Text elements
+--- Create a new layout holding Icon and Text elements
 ---
 --- The argument is a table holding various settings
---- * parent -  (required) the block in which the IconText will created
---- * textId - (optional) the registerd ID of the text element
---- * isLabel - (optional) if true, the text element is a Label, otherwise a TextSelect
+--- * parent -  (required) the block in which the IconText will be created
+--- * id - (optional) the registerd ID of the layout element
+--- * isButton- (optional) if true, the text element is a Button, otherwise a borderless button
+---     * mutually exclusive with isLabel
+--- * isLabel - (optional) if true, the text element is a Label, otherwise a borderless button
+---     * mutually exclusive with isButton
+--- * paddingInner - (optional) the padding between the icon and text elements
 --- * path - (optional) the path to the Icon
 --- * text - (optional) the text of the text element
 function IconText:create(args)
+    if not args.parent then
+        assert(nil, "IconText argument parent is required")
+    end
+    if args.isButton and args.isLabel then
+        assert(nil, "IconText arguments isButton and isLabel are mutually exclusive")
+    end
     local element = {}
     setmetatable(element, self)
-    element.block = args.parent:createBlock()
-    element.block.autoHeight = true
-    element.block.autoWidth = true
-    element.block.flowDirection = tes3.flowDirection.leftToRight
+    element.paddingInner = args.paddingInner or 6
+    if args.isLabel then
+        element.block = args.parent:createBlock{id = args.id}
+        element.block.autoHeight = true
+        element.block.autoWidth = true
+        element.block.childAlignX = 0.5
+        element.block.childAlignY = 0.5
+        element.block.flowDirection = tes3.flowDirection.leftToRight
+    else
+        element.block = args.parent:createButton{id = args.id}
+    end
+    if not args.isButton then
+        element.block.contentPath = nil
+        element.block.paddingTop = nil
+        element.block.paddingBottom = nil
+        element.block.paddingLeft = nil
+        element.block.paddingRight = nil
+        element.block.paddingAllSides = 0
+        element.block.borderAllSides = 0
+    end
+
     element.icon = element.block:createImage()
     if args.isLabel then
-        element.text = element.block:createLabel{id = args.textId}
+        element.text = element.block:createLabel()
+        element.widget = element.text.widget
     else
-        element.text = element.block:createTextSelect{id = args.textId}
+        element.text = element.block.children[1]
+        element.widget = element.block.widget
+        element.icon:reorder{before = element.text}
     end
+
+    if args.isButton then
+        element.text.borderTop = 2
+        element.icon.borderTop = 4
+        element.icon.borderBottom = 2
+        element.icon.borderLeft = 4
+    end
+
+    element.text.borderLeft = element.paddingInner
 
     element:setPath(args.path)
     element:setText(args.text)
@@ -134,10 +173,10 @@ function IconText:setPath(path)
     if path then
         self.icon.contentPath = "Icons\\" .. path
         self.icon.visible = true
-        self.text.borderLeft = 10
+        self.block.paddingLeft = 0
     else
         self.icon.visible = false
-        self.text.borderLeft = 10 + 16
+        self.block.paddingLeft = 16
     end
 end
 
@@ -148,6 +187,14 @@ end
 function IconText:setText(text)
     self.block.text = text
     self.text.text = text
+end
+
+function IconText:register(eventID, callback)
+    self.block:register(eventID, callback)
+end
+
+function IconText:destroy()
+    self.block:destroy()
 end
 
 --- Print out all the children recursively to examine the arrangement of UI elements
@@ -162,6 +209,7 @@ function common:logTree(parent, indent)
         for _, k in pairs({"name", "absolutePosAlignX", "absolutePosAlignY", "autoHeight", "autoWidth",
         "height", "width", "flowDirection", "minHeight", "minWidth", "maxHeight", "maxWidth",
         "ignoreLayoutX", "ignoreLayoutY", "heightProportional", "widthProportional",
+        "positionX", "positionY",
         "childAlignX", "childAlignY", "childOffsetX", "childOffsetY", "paddingAllSides",
         "paddingBottom", "paddingLeft", "paddingRight", "paddingTop",
         "borderAllSides", "borderBottom", "borderLeft", "borderRight", "borderTop"}) do

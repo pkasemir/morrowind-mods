@@ -202,11 +202,11 @@ function chooser:onChooserTextClick(effectText)
                 local effectElement = IconText:create{parent = self.chooseEffectsRight,
                 path = effectRight.magicEffect.icon,
                 text = effectRight.name}
-                effectElement.text:setPropertyInt("AF:paneId", self.chooseEffectsRight.id)
-                effectElement.text:setLuaData("AF:effectList", {effectRight})
-                effectElement.text:register("mouseClick", onChooserTextClick)
+                effectElement.block:setPropertyInt("AF:paneId", self.chooseEffectsRight.id)
+                effectElement.block:setLuaData("AF:effectList", {effectRight})
+                effectElement:register("mouseClick", onChooserTextClick)
                 if self.chosenEffect and effectRight.id == self.chosenEffect.id then
-                    self:onChooserTextClick(effectElement.text)
+                    self:onChooserTextClick(effectElement.block)
                     effect = effectRight
                 end
             end
@@ -255,15 +255,15 @@ function chooser:createUi()
     for nameLeft, effectsListRight in pairs(getInventorySplitEffects(effects)) do
         local effectElement = IconText:create{parent = self.chooseEffectsLeft,
         text = nameLeft}
-        effectElement.text:setPropertyInt("AF:paneId", self.chooseEffectsLeft.id)
-        effectElement.text:setLuaData("AF:effectList", effectsListRight)
-        effectElement.text:register("mouseClick", onChooserTextClick)
+        effectElement.block:setPropertyInt("AF:paneId", self.chooseEffectsLeft.id)
+        effectElement.block:setLuaData("AF:effectList", effectsListRight)
+        effectElement:register("mouseClick", onChooserTextClick)
         if #effectsListRight == 1 then
             effectElement:setPath(effectsListRight[1].magicEffect.icon)
             effectElement:setText(effectsListRight[1].name)
         end
         if self.chosenEffect and nameLeft == self.chosenEffect.name1 then
-            self:onChooserTextClick(effectElement.text)
+            self:onChooserTextClick(effectElement.block)
         end
     end
     self.chooseEffectsLeft:getContentElement():sortChildren(uiTextCompare)
@@ -322,32 +322,6 @@ local function onChooseEffects(e)
     chooser:updateUi()
 end
 
-local function onFilterInventorySelect(e)
-    if not config.modEnabled then return end
-    if e.type ~= "ingredient" then return end
-    if e.item.objectType ~= tes3.objectType.ingredient then
-        e.filter = false
-        return false
-    end
-
-    if chooser.filterEffects then
-        local filter = false
-        for _, filterEffect in pairs(chooser.filterEffects) do
-            for _, itemEffect in FullEffect:visibleEffects(e.item) do
-                log:trace("  " .. itemEffect.name .. " " .. filterEffect.id .. " " .. itemEffect.id)
-                if filterEffect.id == itemEffect.id then
-                    filter = true
-                    break
-                end
-            end
-            if filter == true then
-                break
-            end
-        end
-        e.filter = filter
-    end
-end
-
 local function onIngredientClick(e)
     chooser:getSelectedEffects()
 end
@@ -391,7 +365,7 @@ function chooser:mergeWithMenuAlchemy(menu)
 
     self.filterEffectElement = IconText:create{parent = effectarea.parent,
     isLabel = true,
-    textId = GUI_ID.filter_effect_label}
+    id = GUI_ID.filter_effect_label}
 
     self.chooseButton = buttonBlock:createButton{id = GUI_ID.choose_effects_button, text = strings.chooseEffects}
     self.chooseButton:register("mouseClick", onChooseEffects)
@@ -422,7 +396,7 @@ end
 
 function chooser:detachFromMenuAlchemy()
     if self.filterLabel then self.filterLabel:destroy() end
-    if self.filterEffectElement then self.filterEffectElement.block:destroy() end
+    if self.filterEffectElement then self.filterEffectElement:destroy() end
     if self.chooseButton then self.chooseButton:destroy() end
     if self.chooseBlock then self.chooseBlock:destroy() end
     if self.testButton then self.testButton:destroy() end
@@ -471,7 +445,6 @@ function chooser:init()
     if not GUI_ID.loaded then
         event.register("loaded", onLoaded)
         event.register("uiActivated", onMenuAlchemy, {filter = "MenuAlchemy"})
-        event.register("filterInventorySelect", onFilterInventorySelect)
         event.register("potionBrewed", onPotionAttempted)
         event.register("potionBrewFailed", onPotionAttempted)
     end

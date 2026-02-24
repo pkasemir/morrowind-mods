@@ -8,6 +8,10 @@ local strings = {
     sortCount = "Count",
     sortWeight = "Weight",
     sortValue = "Value",
+
+    filterBy = "Filter By:",
+    filterNone = "None",
+    filterMatching = "Matching",
 }
 
 strings.mcm = {
