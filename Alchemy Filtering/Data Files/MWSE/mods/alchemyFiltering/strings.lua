@@ -1,7 +1,6 @@
 local strings = {
     chooseEffects = "Choose Effects",
-    filterMatchingEffects = "Filter matching effects",
-    filteringEffect = "Filtering Effect:",
+    chosenEffect = "Chosen Effect:",
 
     sortBy = "Sort By:",
     sortName = "Name",

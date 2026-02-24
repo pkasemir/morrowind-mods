@@ -47,15 +47,13 @@ end
 
 function chooser:updateFilteringEffect()
     if self.chosenEffect then
-        self.filterLabel.text = strings.filteringEffect
         self.filterEffectElement:setPath(self.chosenEffect.magicEffect.icon)
         self.filterEffectElement:setText(self.chosenEffect.name)
+        self.filterLabel.visible = true
         self.filterEffectElement.block.visible = true
-        self.filterEffects = {self.chosenEffect}
     else
-        self.filterLabel.text = strings.filterMatchingEffects
+        self.filterLabel.visible = false
         self.filterEffectElement.block.visible = false
-        self.filterEffects = self.selectedEffects
     end
     self.menu:updateLayout()
 end
@@ -249,8 +247,7 @@ function chooser:createUi()
     -- Populate left pane
     local effects = getInventoryEffects()
     if self.chosenEffect and not effects[self.chosenEffect.id] then
-        self.chosenEffect = nil
-        self:updateFilteringEffect()
+        self:setChosenEffect(nil)
     end
     for nameLeft, effectsListRight in pairs(getInventorySplitEffects(effects)) do
         local effectElement = IconText:create{parent = self.chooseEffectsLeft,
@@ -305,7 +302,6 @@ function chooser:uiDestroyed(topLevelMenu)
         -- setChosenEffect() tries to update UI elements
         self:setChosenEffect(nil)
     end
-    self.filterEffects = nil
 
 end
 
@@ -361,7 +357,7 @@ function chooser:mergeWithMenuAlchemy(menu)
     local buttonBlock = self.createButton.parent
 
     local effectarea = self.menu:findChild(GUI_ID.effectarea)
-    self.filterLabel = effectarea.parent:createLabel{id = GUI_ID.filter_label}
+    self.filterLabel = effectarea.parent:createLabel{id = GUI_ID.filter_label, text = strings.chosenEffect}
 
     self.filterEffectElement = IconText:create{parent = effectarea.parent,
     isLabel = true,
