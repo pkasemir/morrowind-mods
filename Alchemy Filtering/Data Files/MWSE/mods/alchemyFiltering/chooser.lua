@@ -80,7 +80,6 @@ function chooser:getSelectedEffects()
     else
         self.selectedEffects = nil
     end
-    self:updateChosenEffectUi()
 end
 
 local function onTestClick(e)
@@ -247,7 +246,7 @@ function chooser:createUi()
     -- Populate left pane
     local effects = getInventoryEffects()
     if self.chosenEffect and not effects[self.chosenEffect.id] then
-        self:setChosenEffect(nil)
+        self.chosenEffect = nil
     end
     for nameLeft, effectsListRight in pairs(getInventorySplitEffects(effects)) do
         local effectElement = IconText:create{parent = self.chooseEffectsLeft,
@@ -264,7 +263,6 @@ function chooser:createUi()
         end
     end
     self.chooseEffectsLeft:getContentElement():sortChildren(uiTextCompare)
-    self.menu:updateLayout()
 end
 
 function chooser:destroyUi()
@@ -308,6 +306,7 @@ end
 function chooser:updateUi()
     if self.data.active then
         self:createUi()
+        self:updateChosenEffectUi()
     else
         self:destroyUi()
     end
@@ -386,8 +385,7 @@ function chooser:mergeWithMenuAlchemy(menu)
         ingredient:registerBefore("mouseClick", onIngredientClick)
     end
 
-    chooser:updateUi()
-    chooser:updateChosenEffectUi()
+    self:updateUi()
 end
 
 function chooser:detachFromMenuAlchemy()
