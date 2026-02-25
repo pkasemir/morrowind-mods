@@ -42,36 +42,45 @@ local function registerGUI()
     GUI_ID.loaded = true
 end
 
-function selecter:compare(a, b)
-    if self.sortAscending then
+function selecter:compare(ascending, a, b)
+    if ascending then
         return a < b
     else
         return b < a
     end
 end
 
+function selecter.getSortValueForName(ingredient, child)
+    return ingredient.name
+end
+
+function selecter.getSortValueForCount(ingredient, child)
+    return child:getPropertyInt(GUI_ID.property_inventory_count)
+end
+
+function selecter.getSortValueForWeight(ingredient, child)
+    return ingredient.weight
+end
+
+function selecter.getSortValueForValue(ingredient, child)
+    return ingredient.value
+end
+
 local function compareInventoryIngredients(a, b)
     local aIngredient = a:getPropertyObject(GUI_ID.property_inventory_object) -- tes3ingredient
     local bIngredient = b:getPropertyObject(GUI_ID.property_inventory_object) -- tes3ingredient
 
-    if selecter.sorting == selecter.sortByCount then
-        local aCount = a:getPropertyInt(GUI_ID.property_inventory_count)
-        local bCount = b:getPropertyInt(GUI_ID.property_inventory_count)
-        if aCount ~= bCount then
-            return selecter:compare(aCount, bCount)
-        end
-    elseif selecter.sorting == selecter.sortByWeight then
-        if aIngredient.weight ~= bIngredient.weight then
-            return selecter:compare(aIngredient.weight, bIngredient.weight)
-        end
-    elseif selecter.sorting == selecter.sortByValue then
-        if aIngredient.value ~= bIngredient.value then
-            return selecter:compare(aIngredient.value, bIngredient.value)
+    for _, sortBy in ipairs(selecter.sorting) do
+        local sortInfo = selecter.sortInfo[sortBy]
+        local aValue = sortInfo.getSortValue(aIngredient, a)
+        local bValue = sortInfo.getSortValue(bIngredient, b)
+        if aValue ~= bValue then
+            return selecter:compare(sortInfo.ascending, aValue, bValue)
         end
     end
 
     -- Always fallback to sort by name
-    return selecter:compare(aIngredient.name, bIngredient.name)
+    return selecter:compare(true, aIngredient.name, bIngredient.name)
 end
 
 function selecter:doSort()
@@ -87,11 +96,11 @@ function selecter:updateSortUI()
     end
 
     -- Activate the active button
-    local activeButton = self.sortButtons[self.sorting]
+    local activeButton = self.sortButtons[self.sorting[1]]
     if activeButton then
         activeButton.widget.state = tes3.uiState.active
         local upDown = " V"
-        if self.sortAscending then
+        if self.sortInfo[self.sorting[1]].ascending then
             upDown = " ^"
         end
         activeButton.text = activeButton.text .. upDown
@@ -101,13 +110,18 @@ function selecter:updateSortUI()
 end
 
 function selecter:onSortByClick(button)
-    if button.id == self.sorting then
+    local sortInfo = self.sortInfo[button.id]
+    if button.id == self.sorting[1] then
         -- Already sorting by this button, so toggle ascending
-        self.sortAscending = not self.sortAscending
-    else
-        self.sortAscending = self.sortInfo[button.id].defaultAscending
+        sortInfo.ascending = not sortInfo.ascending
     end
-    self.sorting = button.id
+    local newSorting = {button.id}
+    for _, sortBy in ipairs(self.sorting) do
+        if sortBy ~= button.id then
+            table.insert(newSorting, sortBy)
+        end
+    end
+    self.sorting = newSorting
 
     self:updateSortUI()
 end
@@ -256,9 +270,7 @@ function selecter:detachFromMenuInventorySelect()
         self.filterBlock,
     }
 
-    self.sorting = self.sortByName
-    self.sortAscending = true
-    self.filtering = self.filterByNone
+    selecter:reset()
     if self.menu then
         self:doSort()
         self:doFiltering()
@@ -293,6 +305,15 @@ function selecter:onModConfigEntryClosed()
     end
 end
 
+function selecter:reset()
+    self.sorting = {self.sortByName}
+    self.filtering = self.filterByNone
+
+    for _, info in pairs(self.sortInfo) do
+        info.ascending = info.defaultAscending
+    end
+end
+
 function selecter:init(chooser)
     if not GUI_ID.loaded then
         event.register("uiActivated", onMenuInventorySelect, {filter = "MenuInventorySelect"})
@@ -313,24 +334,27 @@ function selecter:init(chooser)
     self.sortInfo = {
         [self.sortByName] = {
             baseName = strings.sortName,
+            getSortValue = self.getSortValueForName,
             defaultAscending = true,
         },
         [self.sortByCount] = {
             baseName = strings.sortCount,
+            getSortValue = self.getSortValueForCount,
             defaultAscending = false,
         },
         [self.sortByWeight] = {
             baseName = strings.sortWeight,
+            getSortValue = self.getSortValueForWeight,
             defaultAscending = false,
         },
         [self.sortByValue] = {
             baseName = strings.sortValue,
+            getSortValue = self.getSortValueForValue,
             defaultAscending = true,
         }
     }
-    self.sorting = self.sortByName
-    self.sortAscending = true
-    self.filtering = self.filterByNone
+
+    self:reset()
 end
 
 return selecter
