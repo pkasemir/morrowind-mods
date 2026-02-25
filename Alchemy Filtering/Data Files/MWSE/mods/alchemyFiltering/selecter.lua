@@ -217,6 +217,8 @@ end
 
 function selecter:mergeWithMenuInventorySelect(menu)
     if not menu then return end
+    -- Only merge if the MenuAlchemy is open
+    if not self.chooser.menu then return end
     self.menu = menu
     -- Menu seems to be set to specific width which may be too small for some
     -- effects. We keep the original size as minimum, but re-enable autoWidth
