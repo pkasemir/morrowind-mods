@@ -5,6 +5,7 @@ local textHeight = 20
 local defaultConfig = {
     modEnabled = true,
     chosenEffectSticky = true,
+    sortSticky = true,
     chooserHeight = 12 * textHeight,
 }
 
@@ -32,6 +33,15 @@ local function onModConfigReady()
         description = strings.mcm.chosenEffectStickyDesc,
         variable = EasyMCM.createTableVariable {
             id = "chosenEffectSticky",
+            table = config
+        }
+    })
+
+    settings:createOnOffButton({
+        label = strings.mcm.sortSticky,
+        description = strings.mcm.sortStickyDesc,
+        variable = EasyMCM.createTableVariable {
+            id = "sortSticky",
             table = config
         }
     })

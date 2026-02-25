@@ -301,6 +301,11 @@ function chooser:uiDestroyed(topLevelMenu)
         self:setChosenEffect(nil)
     end
 
+    -- Signal to selecter that MenuAlchemy was closed
+    if topLevelMenu then
+        self.selecter:menuAlchemyDestroyed()
+    end
+
 end
 
 function chooser:updateUi()
@@ -437,7 +442,8 @@ local function onLoaded(e)
     chooser.data = tes3.player.data.alchemyFiltering
 end
 
-function chooser:init()
+function chooser:init(selecter)
+    self.selecter = selecter
     if not GUI_ID.loaded then
         event.register("loaded", onLoaded)
         event.register("uiActivated", onMenuAlchemy, {filter = "MenuAlchemy"})

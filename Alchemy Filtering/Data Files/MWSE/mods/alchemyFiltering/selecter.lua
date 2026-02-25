@@ -288,6 +288,12 @@ function selecter:uiDestroyed()
     self.filterButtons = nil
 end
 
+function selecter:menuAlchemyDestroyed()
+    if not config.sortSticky then
+        self:reset()
+    end
+end
+
 local function onMenuInventorySelect(e)
     if not config.modEnabled then return end
     if not e.newlyCreated then return end
