@@ -215,10 +215,24 @@ function selecter:createFilterButton(args)
     return button
 end
 
+-- getInventorySelectType() returns different string than tes3.inventorySelectFilter,
+-- so as a caution in case MSWE changes this, I'll match both
+local allowedSelectFilters = {
+    enchanted = true,
+    enchantedItem = true,
+    ingredients = true,
+    ingredient = true,
+    quickUse = true,
+    quick = true,
+    soulGemFilled = true,
+}
+
 function selecter:mergeWithMenuInventorySelect(menu)
     if not menu then return end
-    -- Only merge if the MenuAlchemy is open
-    if not self.chooser.menu then return end
+    -- Only allow sorting from a whitelist
+    if not allowedSelectFilters[tes3ui.getInventorySelectType()] then
+        return
+    end
     self.menu = menu
     -- Menu seems to be set to specific width which may be too small for some
     -- effects. We keep the original size as minimum, but re-enable autoWidth
@@ -239,8 +253,10 @@ function selecter:mergeWithMenuInventorySelect(menu)
     self:createSortButton(GUI_ID.inventory_sort_weight_button)
     self:createSortButton(GUI_ID.inventory_sort_value_button)
 
+    -- Only add filtering buttons if the MenuAlchemy is open
+    local doFiltering = not not self.chooser.menu
     self.filtering = self.filterByNone
-    if self.chooser.selectedEffects or self.chooser.chosenEffect then
+    if doFiltering and (self.chooser.selectedEffects or self.chooser.chosenEffect) then
         self.filterBlock = self.scrollpane.parent:createBlock{id = GUI_ID.inventory_filter_block}
         self.filterBlock.autoHeight = true
         self.filterBlock.autoWidth = true
