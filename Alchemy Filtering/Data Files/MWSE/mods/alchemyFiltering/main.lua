@@ -22,7 +22,7 @@ local function onModConfigEntryClosed()
 end
 
 local function onInitialized(e)
-    chooser:init(selecter)
+    chooser:init()
     selecter:init(chooser)
     if config.modEnabled then
         log:debug("enabled")

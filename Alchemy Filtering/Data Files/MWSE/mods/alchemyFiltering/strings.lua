@@ -24,7 +24,7 @@ strings.mcm = {
     chosenEffectStickyDesc = "Enabling this will make the previously chosen effect be selected when the Alchemy Menu is opened again",
 
     sortSticky = "Sort Order is Sticky",
-    sortStickyDesc = "Enabling this will make the previous sorting order in the Alchemy ingredient menu be used again when the Alchemy Menu is opened again",
+    sortStickyDesc = "Enabling this will make the previous sorting order in the inventory select menu be used when the parent menu is opened again",
 
     chooserHeight = "Choose Effects Pane Height",
     chooserHeightDesc = "Set the height in pixels for the choose effects pane that appears after clicking the " ..

@@ -297,10 +297,29 @@ function selecter:uiDestroyed()
     self.sortMenu = nil
 end
 
-function selecter:menuAlchemyDestroyed()
+local menuToInventorySelect = {
+    MenuAlchemy = {"ingredient"},
+    MenuEnchantment = {"enchantedItem", "soulGemFilled"},
+    MenuQuick = {"quick"},
+}
+
+function selecter:resetSortMenusIfNotSticky(parentMenuId)
     if not config.sortSticky then
-        self:reset()
+        local inventorySelectIds = menuToInventorySelect[parentMenuId] or {}
+        for _, inventorySelectId in pairs(inventorySelectIds) do
+            self:resetSortMenu(self.sortMenus[inventorySelectId])
+        end
     end
+end
+
+local function onUiDestroyed(e)
+    selecter:resetSortMenusIfNotSticky(e.source.name)
+end
+
+local function registerDestroyCallback(e)
+    if not config.modEnabled then return end
+    if not e.newlyCreated then return end
+    e.element:registerAfter("destroy", onUiDestroyed)
 end
 
 local function onMenuInventorySelect(e)
@@ -311,6 +330,14 @@ end
 
 function selecter:onModConfigEntryClosed()
     if config.modEnabled then
+        if not config.sortSticky then
+            for parentMenuId, _ in pairs(menuToInventorySelect) do
+                local parentMenu = tes3ui.findMenu(parentMenuId)
+                if not parentMenu then
+                    self:resetSortMenusIfNotSticky(parentMenuId)
+                end
+            end
+        end
         if not self.menu then
             self.chooser:getSelectedEffects()
             self:mergeWithMenuInventorySelect(tes3ui.findMenu("MenuInventorySelect"))
@@ -357,6 +384,9 @@ end
 function selecter:init(chooser)
     if not GUI_ID.loaded then
         event.register("uiActivated", onMenuInventorySelect, {filter = "MenuInventorySelect"})
+        for menuId, _ in pairs(menuToInventorySelect) do
+            event.register("uiActivated", registerDestroyCallback, {filter = menuId})
+        end
     end
     registerGUI()
 
