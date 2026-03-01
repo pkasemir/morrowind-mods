@@ -70,7 +70,7 @@ local function compareInventoryIngredients(a, b)
     local aIngredient = a:getPropertyObject(GUI_ID.property_inventory_object) -- tes3ingredient
     local bIngredient = b:getPropertyObject(GUI_ID.property_inventory_object) -- tes3ingredient
 
-    for _, sortBy in ipairs(selecter.sortMenu.sorting) do
+    for _, sortBy in ipairs(selecter.sortMenu.sortOrder) do
         local sortState = selecter.sortMenu.sortState[sortBy]
         local aValue = sortState.getSortValue(aIngredient, a)
         local bValue = sortState.getSortValue(bIngredient, b)
@@ -96,7 +96,7 @@ function selecter:updateSortUI()
     end
 
     -- Activate the active button
-    local activeButton = self.sortButtons[self.sortMenu.sorting[1]]
+    local activeButton = self.sortButtons[self.sortMenu.sortOrder[1]]
     if activeButton then
         activeButton.widget.state = tes3.uiState.active
         local upDown = " V"
@@ -111,17 +111,17 @@ end
 
 function selecter:onSortByClick(button)
     local sortState = self.sortMenu.sortState[button.id]
-    if button.id == self.sortMenu.sorting[1] then
+    if button.id == self.sortMenu.sortOrder[1] then
         -- Already sorting by this button, so toggle ascending
         sortState.ascending = not sortState.ascending
     end
-    local newSorting = {button.id}
-    for _, sortBy in ipairs(self.sortMenu.sorting) do
+    local newSortOrder = {button.id}
+    for _, sortBy in ipairs(self.sortMenu.sortOrder) do
         if sortBy ~= button.id then
-            table.insert(newSorting, sortBy)
+            table.insert(newSortOrder, sortBy)
         end
     end
-    self.sortMenu.sorting = newSorting
+    self.sortMenu.sortOrder = newSortOrder
 
     self:updateSortUI()
 end
@@ -321,7 +321,7 @@ function selecter:onModConfigEntryClosed()
 end
 
 function selecter:resetSortMenu(sortMenu)
-    sortMenu.sorting = {self.sortByName}
+    sortMenu.sortOrder = {self.sortByName}
     sortMenu.filtering = self.filterByNone
 
     sortMenu.sortState = {}
