@@ -70,12 +70,12 @@ local function compareInventoryIngredients(a, b)
     local aIngredient = a:getPropertyObject(GUI_ID.property_inventory_object) -- tes3ingredient
     local bIngredient = b:getPropertyObject(GUI_ID.property_inventory_object) -- tes3ingredient
 
-    for _, sortBy in ipairs(selecter.sorting) do
-        local sortInfo = selecter.sortInfo[sortBy]
-        local aValue = sortInfo.getSortValue(aIngredient, a)
-        local bValue = sortInfo.getSortValue(bIngredient, b)
+    for _, sortBy in ipairs(selecter.sortMenu.sorting) do
+        local sortState = selecter.sortMenu.sortState[sortBy]
+        local aValue = sortState.getSortValue(aIngredient, a)
+        local bValue = sortState.getSortValue(bIngredient, b)
         if aValue ~= bValue then
-            return selecter:compare(sortInfo.ascending, aValue, bValue)
+            return selecter:compare(sortState.ascending, aValue, bValue)
         end
     end
 
@@ -96,11 +96,11 @@ function selecter:updateSortUI()
     end
 
     -- Activate the active button
-    local activeButton = self.sortButtons[self.sorting[1]]
+    local activeButton = self.sortButtons[self.sortMenu.sorting[1]]
     if activeButton then
         activeButton.widget.state = tes3.uiState.active
         local upDown = " V"
-        if self.sortInfo[self.sorting[1]].ascending then
+        if self.sortMenu.sortState[activeButton.id].ascending then
             upDown = " ^"
         end
         activeButton.text = activeButton.text .. upDown
@@ -110,18 +110,18 @@ function selecter:updateSortUI()
 end
 
 function selecter:onSortByClick(button)
-    local sortInfo = self.sortInfo[button.id]
-    if button.id == self.sorting[1] then
+    local sortState = self.sortMenu.sortState[button.id]
+    if button.id == self.sortMenu.sorting[1] then
         -- Already sorting by this button, so toggle ascending
-        sortInfo.ascending = not sortInfo.ascending
+        sortState.ascending = not sortState.ascending
     end
     local newSorting = {button.id}
-    for _, sortBy in ipairs(self.sorting) do
+    for _, sortBy in ipairs(self.sortMenu.sorting) do
         if sortBy ~= button.id then
             table.insert(newSorting, sortBy)
         end
     end
-    self.sorting = newSorting
+    self.sortMenu.sorting = newSorting
 
     self:updateSortUI()
 end
@@ -154,9 +154,9 @@ end
 
 function selecter:doFiltering()
     local filterEffects = nil
-    if self.filtering == self.filterByMatching then
+    if self.sortMenu.filtering == self.filterByMatching then
         filterEffects = self.chooser.selectedEffects
-    elseif self.filtering == self.filterByChosen then
+    elseif self.sortMenu.filtering == self.filterByChosen then
         if self.chooser.chosenEffect then
             filterEffects = {self.chooser.chosenEffect}
         end
@@ -177,7 +177,7 @@ function selecter:updateFilterUI()
         end
 
         -- Activate the active button
-        local activeButton = self.filterButtons[self.filtering]
+        local activeButton = self.filterButtons[self.sortMenu.filtering]
         if activeButton then
             activeButton.widget.state = tes3.uiState.active
         end
@@ -187,7 +187,7 @@ function selecter:updateFilterUI()
 end
 
 function selecter:onFilterByClick(button)
-    self.filtering = button.id
+    self.sortMenu.filtering = button.id
     self:updateFilterUI()
 end
 
@@ -215,22 +215,11 @@ function selecter:createFilterButton(args)
     return button
 end
 
--- getInventorySelectType() returns different string than tes3.inventorySelectFilter,
--- so as a caution in case MSWE changes this, I'll match both
-local allowedSelectFilters = {
-    enchanted = true,
-    enchantedItem = true,
-    ingredients = true,
-    ingredient = true,
-    quickUse = true,
-    quick = true,
-    soulGemFilled = true,
-}
-
 function selecter:mergeWithMenuInventorySelect(menu)
     if not menu then return end
     -- Only allow sorting from a whitelist
-    if not allowedSelectFilters[tes3ui.getInventorySelectType()] then
+    self.sortMenu = self.sortMenus[tes3ui.getInventorySelectType()]
+    if not self.sortMenu then
         return
     end
     self.menu = menu
@@ -255,7 +244,7 @@ function selecter:mergeWithMenuInventorySelect(menu)
 
     -- Only add filtering buttons if the MenuAlchemy is open
     local doFiltering = not not self.chooser.menu
-    self.filtering = self.filterByNone
+    self.sortMenu.filtering = self.filterByNone
     if doFiltering and (self.chooser.selectedEffects or self.chooser.chosenEffect) then
         self.filterBlock = self.scrollpane.parent:createBlock{id = GUI_ID.inventory_filter_block}
         self.filterBlock.autoHeight = true
@@ -268,13 +257,13 @@ function selecter:mergeWithMenuInventorySelect(menu)
 
         if self.chooser.selectedEffects then
             self:createFilterButton{id = GUI_ID.inventory_filter_matching_button, text = strings.filterMatching}
-            self.filtering = self.filterByMatching
+            self.sortMenu.filtering = self.filterByMatching
         end
 
         if self.chooser.chosenEffect then
             self:createFilterButton{id = GUI_ID.inventory_filter_chosen_effect_button,
                 effect = self.chooser.chosenEffect}
-            self.filtering = self.filterByChosen
+            self.sortMenu.filtering = self.filterByChosen
         end
         self:updateFilterUI()
     end
@@ -304,6 +293,8 @@ function selecter:uiDestroyed()
     self.sortButtons = nil
     self.filterBlock = nil
     self.filterButtons = nil
+
+    self.sortMenu = nil
 end
 
 function selecter:menuAlchemyDestroyed()
@@ -329,12 +320,37 @@ function selecter:onModConfigEntryClosed()
     end
 end
 
-function selecter:reset()
-    self.sorting = {self.sortByName}
-    self.filtering = self.filterByNone
+function selecter:resetSortMenu(sortMenu)
+    sortMenu.sorting = {self.sortByName}
+    sortMenu.filtering = self.filterByNone
 
-    for _, info in pairs(self.sortInfo) do
-        info.ascending = info.defaultAscending
+    sortMenu.sortState = {}
+    for sortBy, info in pairs(self.sortInfo) do
+        sortMenu.sortState[sortBy] = {
+            getSortValue = info.getSortValue,
+            ascending = info.defaultAscending,
+        }
+    end
+
+    -- getInventorySelectType() returns different string than tes3.inventorySelectFilter,
+    -- so as a caution in case MSWE changes this, I'll match both
+    sortMenu.sortState["enchanted"] = sortMenu.sortState["enchantedItem"]
+    sortMenu.sortState["ingredients"] = sortMenu.sortState["ingredient"]
+    sortMenu.sortState["quickUse"] = sortMenu.sortState["quick"]
+end
+
+local sortMenus = {
+    "enchantedItem",
+    "ingredient",
+    "quick",
+    "soulGemFilled",
+}
+
+function selecter:reset()
+    self.sortMenus = {}
+    for _, menuId in pairs(sortMenus) do
+        self.sortMenus[menuId] = {}
+        self:resetSortMenu(self.sortMenus[menuId])
     end
 end
 
