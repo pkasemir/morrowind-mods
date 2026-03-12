@@ -1,5 +1,5 @@
 
-for FOLDER in "Alchemy Filtering"; do
+for FOLDER in "Alchemy Filtering" "Alchemy Quick Open"; do
     TAG_PREFIX=$(cat "$FOLDER/tag_prefix")
     VERSION=$(git describe --tags --exact-match --match "$TAG_PREFIX*")
     if [ -n "$VERSION" ]; then
