@@ -1,5 +1,5 @@
 [size=5]Description[/size]
-This Mod improves the potion brewing interface to help you find the right ingredients to make your potion. Once you collect lots of ingredients and have a high alchemy level, which lets you see multiple effects, then finding the right ingredients to match and make potions becomes a real chore. This Mod lets you select an ingredient and then find ingredients with matching effects. Or you can choose your effect first and filter the ingredients which have that effect.
+This Mod improves the potion brewing interface to help you find the right ingredients to make your potion. Once you collect lots of ingredients and have a high alchemy level, which lets you see multiple effects, then finding the right ingredients to match and make potions becomes a real chore. This Mod lets you select an ingredient and then find ingredients with matching effects. Or you can choose your effect first and filter the ingredients which have that effect. There is also some sorting options so you can pick your items by name, count, weight, or cost.
 
 [size=5]Requirements[/size]
 [list]
@@ -9,16 +9,19 @@ This Mod improves the potion brewing interface to help you find the right ingred
 [list]
 [*] A LUA script that runs with MWSE and is very easy to install
 [*] Alchemy potions and effects are the same as vanilla
-[*] Modifies the Alchemy Menu to choose effects and filter ingredients
+[*] Modifies the Alchemy Menu to choose an effect to filter ingredients
+[*] Modifies the Inventory Select Menu to choose what type of filter to do and sorting
 [/list]
 [size=5]Installation[/size]
 Copy [i]Data Files[/i] into your Morrowind install directory.
 Or use the Mod Manager download.
 
 [size=5]Usage[/size]
-Ingredient filtering is automatically done when you select the first ingredient. Secondary ingredients will be filtered to have matching effects, based on how many effects you can see with your current Alchemy level
+Ingredient filtering is automatically done when you select the first ingredient. Secondary ingredients will be filtered to have matching effects, based on how many effects you can see with your current Alchemy level.
 
 You can also filter by choosing a specific effect. Click [i]Choose Effects[/i] button to show an integrated panel which lets you choose the effect based on name and only shows the effects for which you know you can create.
+
+Each of the filtering types can be chosen when you are selecting ingredients, and sorting options are also available to help find the ingredients you are looking for.
 
 You can turn on and off the mod in-game using the Mod Config menu.
 
