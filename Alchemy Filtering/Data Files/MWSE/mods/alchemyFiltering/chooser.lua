@@ -1,6 +1,6 @@
 local log = mwse.Logger.new()
 log.level = "DEBUG"
-local strings = require("alchemyFiltering.strings")
+local i18n = mwse.loadTranslations("alchemyFiltering")
 local config = require("alchemyFiltering.config")
 local common = require("alchemyFiltering.common")
 
