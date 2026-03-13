@@ -356,13 +356,13 @@ function chooser:mergeWithMenuAlchemy(menu)
     local buttonBlock = self.createButton.parent
 
     local effectarea = self.menu:findChild(GUI_ID.effectarea)
-    self.chosenLabel = effectarea.parent:createLabel{id = GUI_ID.chosen_label, text = strings.chosenEffect}
+    self.chosenLabel = effectarea.parent:createLabel{id = GUI_ID.chosen_label, text = i18n("chosenEffect")}
 
     self.chosenEffectElement = IconText:create{parent = effectarea.parent,
     isLabel = true,
     id = GUI_ID.chosen_effect_block}
 
-    self.chooseButton = buttonBlock:createButton{id = GUI_ID.choose_effects_button, text = strings.chooseEffects}
+    self.chooseButton = buttonBlock:createButton{id = GUI_ID.choose_effects_button, text = i18n("chooseEffects")}
     self.chooseButton:register("mouseClick", onChooseEffects)
     self.chooseButton:reorder{before = self.createButton}
 

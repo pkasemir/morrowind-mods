@@ -235,7 +235,7 @@ function selecter:mergeWithMenuInventorySelect(menu)
     self.sortBlock.childAlignY = 0.5
     self.sortBlock:reorder{before = self.scrollpane}
 
-    self.sortBlock:createLabel{text = strings.sortBy}
+    self.sortBlock:createLabel{text = i18n("sortBy")}
     self.sortButtons = {}
     self:createSortButton(GUI_ID.inventory_sort_name_button)
     self:createSortButton(GUI_ID.inventory_sort_count_button)
@@ -251,12 +251,12 @@ function selecter:mergeWithMenuInventorySelect(menu)
         self.filterBlock.autoWidth = true
         self.filterBlock.childAlignY = 0.5
         self.filterBlock:reorder{before = self.scrollpane}
-        self.filterBlock:createLabel{text = strings.filterBy}
+        self.filterBlock:createLabel{text = i18n("filterBy")}
         self.filterButtons = {}
-        self:createFilterButton{id = GUI_ID.inventory_filter_none_button, text = strings.filterNone}
+        self:createFilterButton{id = GUI_ID.inventory_filter_none_button, text = i18n("filterNone")}
 
         if self.chooser.selectedEffects then
-            self:createFilterButton{id = GUI_ID.inventory_filter_matching_button, text = strings.filterMatching}
+            self:createFilterButton{id = GUI_ID.inventory_filter_matching_button, text = i18n("filterMatching")}
             self.sortMenu.filtering = self.filterByMatching
         end
 
@@ -403,22 +403,22 @@ function selecter:init(chooser)
 
     self.sortInfo = {
         [self.sortByName] = {
-            baseName = strings.sortName,
+            baseName = i18n("sortName"),
             getSortValue = self.getSortValueForName,
             defaultAscending = true,
         },
         [self.sortByCount] = {
-            baseName = strings.sortCount,
+            baseName = i18n("sortCount"),
             getSortValue = self.getSortValueForCount,
             defaultAscending = false,
         },
         [self.sortByWeight] = {
-            baseName = strings.sortWeight,
+            baseName = i18n("sortWeight"),
             getSortValue = self.getSortValueForWeight,
             defaultAscending = false,
         },
         [self.sortByValue] = {
-            baseName = strings.sortValue,
+            baseName = i18n("sortValue"),
             getSortValue = self.getSortValueForValue,
             defaultAscending = true,
         }
