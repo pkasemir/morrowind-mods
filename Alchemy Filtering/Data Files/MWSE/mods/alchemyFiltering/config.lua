@@ -22,8 +22,8 @@ local function onModConfigReady()
     local settings = page:createCategory(i18n("mcm.settings"))
 
     settings:createOnOffButton({
-        label = i18n("mcm.modEnabled"),
-        description = i18n("mcm.modEnabledDesc"),
+        label = i18n("mcm.modEnabled.label"),
+        description = i18n("mcm.modEnabled.desc"),
         variable = EasyMCM.createTableVariable {
             id = "modEnabled",
             table = config
@@ -31,8 +31,8 @@ local function onModConfigReady()
     })
 
     settings:createOnOffButton({
-        label = i18n("mcm.chosenEffectSticky"),
-        description = i18n("mcm.chosenEffectStickyDesc"),
+        label = i18n("mcm.chosenEffectSticky.label"),
+        description = i18n("mcm.chosenEffectSticky.desc"),
         variable = EasyMCM.createTableVariable {
             id = "chosenEffectSticky",
             table = config
@@ -40,8 +40,8 @@ local function onModConfigReady()
     })
 
     settings:createOnOffButton({
-        label = i18n("mcm.sortSticky"),
-        description = i18n("mcm.sortStickyDesc"),
+        label = i18n("mcm.sortSticky.label"),
+        description = i18n("mcm.sortSticky.desc"),
         variable = EasyMCM.createTableVariable {
             id = "sortSticky",
             table = config
@@ -49,10 +49,10 @@ local function onModConfigReady()
     })
 
     settings:createSlider({
-        label = i18n("mcm.chooserHeight"),
+        label = i18n("mcm.chooserHeight.label"),
         min = 80,
         max = 300,
-        description = i18n("mcm.chooserHeightDesc"),
+        description = i18n("mcm.chooserHeight.desc"),
         variable = EasyMCM.createTableVariable {
             id = "chooserHeight",
             table = config
