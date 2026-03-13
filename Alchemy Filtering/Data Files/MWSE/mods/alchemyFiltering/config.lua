@@ -9,11 +9,13 @@ local defaultConfig = {
     chooserHeight = 12 * textHeight,
 }
 
-local config = mwse.loadConfig(strings.mcm.modName, defaultConfig)
+local configFilename = "Alchemy Filtering"
+
+local config = mwse.loadConfig(configFilename, defaultConfig)
 
 local function onModConfigReady()
     local template = EasyMCM.createTemplate(strings.mcm.modName)
-    template:saveOnClose(strings.mcm.modName, config)
+    template:saveOnClose(configFilename, config)
     template:register();
 
     local page = template:createSideBarPage{label = strings.mcm.settings};
