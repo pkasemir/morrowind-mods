@@ -67,11 +67,13 @@ end
 function chooser:getSelectedEffects()
     local selected = false
     local effects = {}
-    for _, ingredientId in ipairs(GUI_ID.ingredient) do
-        local ingredient = self.menu:findChild(ingredientId):getPropertyObject("MenuAlchemy_object") -- tes3ingredient
-        for _, effect in FullEffect:visibleEffects(ingredient) do
-            effects[effect.id] = effect
-            selected = true
+    if self.menu then
+        for _, ingredientId in ipairs(GUI_ID.ingredient) do
+            local ingredient = self.menu:findChild(ingredientId):getPropertyObject("MenuAlchemy_object") -- tes3ingredient
+            for _, effect in FullEffect:visibleEffects(ingredient) do
+                effects[effect.id] = effect
+                selected = true
+            end
         end
     end
 
