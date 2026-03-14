@@ -1,8 +1,19 @@
 local i18n = mwse.loadTranslations("alchemyQuickOpen")
 
+local defaultKeybind = {
+    keyCode = tes3.scanCode.a,
+    isShiftDown = false,
+    isAltDown = false,
+    isControlDown = false,
+}
+
+local defaultConfig = {
+    keybind = defaultKeybind,
+}
+
 local configFilename = "Alchemy Quick Open"
 
-local config = mwse.loadConfig(configFilename, {})
+local config = mwse.loadConfig(configFilename, defaultConfig)
 
 local function onModConfigReady()
     local template = mwse.mcm.createTemplate{
@@ -22,12 +33,7 @@ local function onModConfigReady()
         allowMouse = true,
         configKey = "keybind",
         keybindName = i18n("mcm.keybind.name"),
-        defaultSetting = {
-            keyCode = tes3.scanCode.a,
-            isShiftDown = false,
-            isAltDown = false,
-            isControlDown = false,
-        },
+        defaultSetting = defaultKeybind,
         showDefaultSetting = true,
     }
 end
