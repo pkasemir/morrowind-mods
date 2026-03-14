@@ -424,7 +424,10 @@ function chooser:onModConfigEntryClosed()
         if not menuAlchemy and not config.chosenEffectSticky then
             self.chosenEffect = nil
         end
-        if not self.menu then
+        if self.menu then
+            self.chooseBlock.height = config.chooserHeight
+            self.menu:updateLayout()
+        else
             self:mergeWithMenuAlchemy(menuAlchemy)
         end
     else
