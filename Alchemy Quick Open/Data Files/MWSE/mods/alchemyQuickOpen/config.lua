@@ -16,12 +16,12 @@ local function onModConfigReady()
     local settings = page:createCategory(i18n("mcm.settings"))
 
     settings:createKeyBinder{
-        label = i18n("mcm.keybind"),
-        description = i18n("mcm.keybindDesc"),
+        label = i18n("mcm.keybind.label"),
+        description = i18n("mcm.keybind.desc"),
         allowCombinations = true,
         allowMouse = true,
         configKey = "keybind",
-        keybindName = i18n("mcm.keybindName"),
+        keybindName = i18n("mcm.keybind.name"),
         defaultSetting = {
             keyCode = tes3.scanCode.a,
             isShiftDown = false,
