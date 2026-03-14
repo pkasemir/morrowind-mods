@@ -1,6 +1,8 @@
 local strings = require("alchemyQuickOpen.strings")
 
-local config = mwse.loadConfig(strings.mcm.modName, {})
+local configFilename = "Alchemy Quick Open"
+
+local config = mwse.loadConfig(configFilename, {})
 
 local function onModConfigReady()
     local template = mwse.mcm.createTemplate{
@@ -8,7 +10,7 @@ local function onModConfigReady()
         config = config,
     }
     template:register()
-    template:saveOnClose(strings.mcm.modName, config)
+    template:saveOnClose(configFilename, config)
 
     local page = template:createSideBarPage{label = strings.mcm.settings};
     local settings = page:createCategory(strings.mcm.settings)
