@@ -1,6 +1,6 @@
 local log = mwse.Logger.new()
 log.level = "DEBUG"
-local strings = require("alchemyFiltering.strings")
+local i18n = require("alchemyFiltering.i18n")
 local config = require("alchemyFiltering.config")
 local chooser = require("alchemyFiltering.chooser")
 local selecter = require("alchemyFiltering.selecter")
@@ -30,7 +30,7 @@ local function onInitialized(e)
         log:debug("disabled")
         chooser.data.active = false
     end
-    event.register("modConfigEntryClosed", onModConfigEntryClosed, {filter = strings.mcm.modName})
+    event.register("modConfigEntryClosed", onModConfigEntryClosed, {filter = i18n("mcm.modName")})
     -- event.register("skillRaised", onAlchemyRaised, {filter = tes3.skill.alchemy})
 end
 

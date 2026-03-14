@@ -1,6 +1,6 @@
 local log = mwse.Logger.new()
 log.level = "DEBUG"
-local strings = require("alchemyFiltering.strings")
+local i18n = require("alchemyFiltering.i18n")
 local config = require("alchemyFiltering.config")
 local common = require("alchemyFiltering.common")
 
@@ -67,11 +67,13 @@ end
 function chooser:getSelectedEffects()
     local selected = false
     local effects = {}
-    for _, ingredientId in ipairs(GUI_ID.ingredient) do
-        local ingredient = self.menu:findChild(ingredientId):getPropertyObject("MenuAlchemy_object") -- tes3ingredient
-        for _, effect in FullEffect:visibleEffects(ingredient) do
-            effects[effect.id] = effect
-            selected = true
+    if self.menu then
+        for _, ingredientId in ipairs(GUI_ID.ingredient) do
+            local ingredient = self.menu:findChild(ingredientId):getPropertyObject("MenuAlchemy_object") -- tes3ingredient
+            for _, effect in FullEffect:visibleEffects(ingredient) do
+                effects[effect.id] = effect
+                selected = true
+            end
         end
     end
 
@@ -356,13 +358,13 @@ function chooser:mergeWithMenuAlchemy(menu)
     local buttonBlock = self.createButton.parent
 
     local effectarea = self.menu:findChild(GUI_ID.effectarea)
-    self.chosenLabel = effectarea.parent:createLabel{id = GUI_ID.chosen_label, text = strings.chosenEffect}
+    self.chosenLabel = effectarea.parent:createLabel{id = GUI_ID.chosen_label, text = i18n("chosenEffect")}
 
     self.chosenEffectElement = IconText:create{parent = effectarea.parent,
     isLabel = true,
     id = GUI_ID.chosen_effect_block}
 
-    self.chooseButton = buttonBlock:createButton{id = GUI_ID.choose_effects_button, text = strings.chooseEffects}
+    self.chooseButton = buttonBlock:createButton{id = GUI_ID.choose_effects_button, text = i18n("chooseEffects")}
     self.chooseButton:register("mouseClick", onChooseEffects)
     self.chooseButton:reorder{before = self.createButton}
 
@@ -422,7 +424,10 @@ function chooser:onModConfigEntryClosed()
         if not menuAlchemy and not config.chosenEffectSticky then
             self.chosenEffect = nil
         end
-        if not self.menu then
+        if self.menu then
+            self.chooseBlock.height = config.chooserHeight
+            self.menu:updateLayout()
+        else
             self:mergeWithMenuAlchemy(menuAlchemy)
         end
     else

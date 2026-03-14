@@ -1,5 +1,6 @@
 local log = mwse.Logger.new()
 log.level = "DEBUG"
+local i18n = require("alchemyFiltering.i18n")
 
 local common = {}
 
@@ -57,10 +58,10 @@ function FullEffect:new(effectId, attributeId, skillId)
     effect.name1, effect.name2 = splitString(effect.magicEffect.name, " ")
     if effect.name2 then
         if attributeEffects[effectId] then
-            effect.name2 = tes3.attributeName[attributeId]
+            effect.name2 = i18n("attribute." .. tes3.attributeName[attributeId])
             effect.id = effect.id + attributeId * 1000000
         elseif skillEffects[effectId] then
-            effect.name2 = tes3.skillName[skillId]
+            effect.name2 = i18n("skill." .. tes3.skillName[skillId])
             effect.id = effect.id + skillId * 1000000
         end
         effect.name2 = effect.name2:gsub("^%l", string.upper)

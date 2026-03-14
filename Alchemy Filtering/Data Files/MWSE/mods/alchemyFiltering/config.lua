@@ -1,5 +1,5 @@
 local EasyMCM = require("easyMCM.EasyMCM")
-local strings = require("alchemyFiltering.strings")
+local i18n = require("alchemyFiltering.i18n")
 
 local textHeight = 20
 local defaultConfig = {
@@ -9,19 +9,21 @@ local defaultConfig = {
     chooserHeight = 12 * textHeight,
 }
 
-local config = mwse.loadConfig(strings.mcm.modName, defaultConfig)
+local configFilename = "Alchemy Filtering"
+
+local config = mwse.loadConfig(configFilename, defaultConfig)
 
 local function onModConfigReady()
-    local template = EasyMCM.createTemplate(strings.mcm.modName)
-    template:saveOnClose(strings.mcm.modName, config)
+    local template = EasyMCM.createTemplate(i18n("mcm.modName"))
+    template:saveOnClose(configFilename, config)
     template:register();
 
-    local page = template:createSideBarPage{label = strings.mcm.settings};
-    local settings = page:createCategory(strings.mcm.settings)
+    local page = template:createSideBarPage{label = i18n("mcm.settings")};
+    local settings = page:createCategory(i18n("mcm.settings"))
 
     settings:createOnOffButton({
-        label = strings.mcm.modEnabled,
-        description = strings.mcm.modEnabledDesc,
+        label = i18n("mcm.modEnabled.label"),
+        description = i18n("mcm.modEnabled.desc"),
         variable = EasyMCM.createTableVariable {
             id = "modEnabled",
             table = config
@@ -29,8 +31,8 @@ local function onModConfigReady()
     })
 
     settings:createOnOffButton({
-        label = strings.mcm.chosenEffectSticky,
-        description = strings.mcm.chosenEffectStickyDesc,
+        label = i18n("mcm.chosenEffectSticky.label"),
+        description = i18n("mcm.chosenEffectSticky.desc"),
         variable = EasyMCM.createTableVariable {
             id = "chosenEffectSticky",
             table = config
@@ -38,8 +40,8 @@ local function onModConfigReady()
     })
 
     settings:createOnOffButton({
-        label = strings.mcm.sortSticky,
-        description = strings.mcm.sortStickyDesc,
+        label = i18n("mcm.sortSticky.label"),
+        description = i18n("mcm.sortSticky.desc"),
         variable = EasyMCM.createTableVariable {
             id = "sortSticky",
             table = config
@@ -47,10 +49,10 @@ local function onModConfigReady()
     })
 
     settings:createSlider({
-        label = strings.mcm.chooserHeight,
+        label = i18n("mcm.chooserHeight.label"),
         min = 80,
         max = 300,
-        description = strings.mcm.chooserHeightDesc,
+        description = i18n("mcm.chooserHeight.desc"),
         variable = EasyMCM.createTableVariable {
             id = "chooserHeight",
             table = config
