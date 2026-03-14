@@ -1,31 +1,39 @@
-local strings = require("alchemyQuickOpen.strings")
+local i18n = mwse.loadTranslations("alchemyQuickOpen")
 
-local config = mwse.loadConfig(strings.mcm.modName, {})
+local defaultKeybind = {
+    keyCode = tes3.scanCode.a,
+    isShiftDown = false,
+    isAltDown = false,
+    isControlDown = false,
+}
+
+local defaultConfig = {
+    keybind = defaultKeybind,
+}
+
+local configFilename = "Alchemy Quick Open"
+
+local config = mwse.loadConfig(configFilename, defaultConfig)
 
 local function onModConfigReady()
     local template = mwse.mcm.createTemplate{
-        name = strings.mcm.modName,
+        name = i18n("mcm.modName"),
         config = config,
     }
     template:register()
-    template:saveOnClose(strings.mcm.modName, config)
+    template:saveOnClose(configFilename, config)
 
-    local page = template:createSideBarPage{label = strings.mcm.settings};
-    local settings = page:createCategory(strings.mcm.settings)
+    local page = template:createSideBarPage{label = i18n("mcm.settings")};
+    local settings = page:createCategory(i18n("mcm.settings"))
 
     settings:createKeyBinder{
-        label = strings.mcm.keybind,
-        description = strings.mcm.keybindDesc,
+        label = i18n("mcm.keybind.label"),
+        description = i18n("mcm.keybind.desc"),
         allowCombinations = true,
         allowMouse = true,
         configKey = "keybind",
-        keybindName = strings.mcm.keybindName,
-        defaultSetting = {
-            keyCode = tes3.scanCode.a,
-            isShiftDown = false,
-            isAltDown = false,
-            isControlDown = false,
-        },
+        keybindName = i18n("mcm.keybind.name"),
+        defaultSetting = defaultKeybind,
         showDefaultSetting = true,
     }
 end
