@@ -1,5 +1,5 @@
 local EasyMCM = require("easyMCM.EasyMCM")
-local i18n = mwse.loadTranslations("alchemyFiltering")
+local i18n = require("alchemyFiltering.i18n")
 
 local textHeight = 20
 local defaultConfig = {
