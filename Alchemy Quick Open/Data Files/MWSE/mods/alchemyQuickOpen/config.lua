@@ -1,4 +1,4 @@
-local strings = require("alchemyQuickOpen.strings")
+local i18n = mwse.loadTranslations("alchemyQuickOpen")
 
 local configFilename = "Alchemy Quick Open"
 
