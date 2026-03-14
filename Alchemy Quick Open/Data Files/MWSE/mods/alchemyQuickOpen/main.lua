@@ -48,7 +48,7 @@ local function onInput(e)
         end
     end
 
-    tes3.messageBox{message = strings.cannotOpen}
+    tes3.messageBox{message = i18n("cannotOpen")}
 end
 
 local function registerKeybindEvent(tes3event)
@@ -93,7 +93,7 @@ local function onModConfigEntryClosed()
 end
 
 local function onInitialized(e)
-    event.register(tes3.event.modConfigEntryClosed, onModConfigEntryClosed, {filter = strings.mcm.modName})
+    event.register(tes3.event.modConfigEntryClosed, onModConfigEntryClosed, {filter = i18n("mcm.modName")})
     event.register(tes3.event.menuEnter, onMenuEnter)
     event.register(tes3.event.menuExit, onMenuExit)
     registerGUI()

@@ -6,22 +6,22 @@ local config = mwse.loadConfig(configFilename, {})
 
 local function onModConfigReady()
     local template = mwse.mcm.createTemplate{
-        name = strings.mcm.modName,
+        name = i18n("mcm.modName"),
         config = config,
     }
     template:register()
     template:saveOnClose(configFilename, config)
 
-    local page = template:createSideBarPage{label = strings.mcm.settings};
-    local settings = page:createCategory(strings.mcm.settings)
+    local page = template:createSideBarPage{label = i18n("mcm.settings")};
+    local settings = page:createCategory(i18n("mcm.settings"))
 
     settings:createKeyBinder{
-        label = strings.mcm.keybind,
-        description = strings.mcm.keybindDesc,
+        label = i18n("mcm.keybind"),
+        description = i18n("mcm.keybindDesc"),
         allowCombinations = true,
         allowMouse = true,
         configKey = "keybind",
-        keybindName = strings.mcm.keybindName,
+        keybindName = i18n("mcm.keybindName"),
         defaultSetting = {
             keyCode = tes3.scanCode.a,
             isShiftDown = false,
