@@ -39,4 +39,47 @@ translations.mcm = {
     },
 }
 
+-- Taken from tes3.attributeName
+translations.attribute = {
+	["strength"] = "strength",
+	["intelligence"] = "intelligence",
+	["willpower"] = "willpower",
+	["agility"] = "agility",
+	["speed"] = "speed",
+	["endurance"] = "endurance",
+	["personality"] = "personality",
+	["luck"] = "luck",
+}
+
+-- Taken from tes3.skillName
+translations.skill = {
+	["Block"] = "Block",
+	["Armorer"] = "Armorer",
+	["Medium Armor"] = "Medium Armor",
+	["Heavy Armor"] = "Heavy Armor",
+	["Blunt Weapon"] = "Blunt Weapon",
+	["Long Blade"] = "Long Blade",
+	["Axe"] = "Axe",
+	["Spear"] = "Spear",
+	["Athletics"] = "Athletics",
+	["Enchant"] = "Enchant",
+	["Destruction"] = "Destruction",
+	["Alteration"] = "Alteration",
+	["Illusion"] = "Illusion",
+	["Conjuration"] = "Conjuration",
+	["Mysticism"] = "Mysticism",
+	["Restoration"] = "Restoration",
+	["Alchemy"] = "Alchemy",
+	["Unarmored"] = "Unarmored",
+	["Security"] = "Security",
+	["Sneak"] = "Sneak",
+	["Acrobatics"] = "Acrobatics",
+	["Light Armor"] = "Light Armor",
+	["Short Blade"] = "Short Blade",
+	["Marksman"] = "Marksman",
+	["Mercantile"] = "Mercantile",
+	["Speechcraft"] = "Speechcraft",
+	["Hand to Hand"] = "Hand to Hand",
+}
+
 return translations
