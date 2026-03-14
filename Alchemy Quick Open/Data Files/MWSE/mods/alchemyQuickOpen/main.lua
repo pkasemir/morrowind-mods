@@ -1,7 +1,7 @@
 local log = mwse.Logger.new()
 log.level = "INFO"
 local config = require("alchemyQuickOpen.config")
-local i18n = mwse.loadTranslations("alchemyQuickOpen")
+local i18n = require("alchemyQuickOpen.i18n")
 
 local GUI_ID = {}
 local state = {

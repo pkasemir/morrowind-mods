@@ -1,4 +1,4 @@
-local i18n = mwse.loadTranslations("alchemyQuickOpen")
+local i18n = require("alchemyQuickOpen.i18n")
 
 local defaultKeybind = {
     keyCode = tes3.scanCode.a,
