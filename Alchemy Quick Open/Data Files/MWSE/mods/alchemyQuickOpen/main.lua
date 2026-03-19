@@ -8,9 +8,16 @@ local state = {
     registeredEvents = {},
 }
 
+local ignoreMenus = {}
+function ignoreMenus:add(menu)
+    self[tes3ui.registerID(menu)] = true
+end
+
 local function registerGUI()
-	GUI_ID.MenuInventory = tes3ui.registerID("MenuInventory")
-	GUI_ID.MenuQuantity = tes3ui.registerID("MenuQuantity")
+    GUI_ID.MenuInventory = tes3ui.registerID("MenuInventory")
+
+    ignoreMenus:add("MenuQuantity")
+    ignoreMenus:add("MenuMapNoteEdit")
 end
 
 local function isInventoryAvailable()
@@ -27,9 +34,9 @@ local function onInput(e)
     if tes3ui.getCursorTile() then
         return
     end
-    -- Make sure MenuQuantity isn't at the top
+    -- Check that top menu isn't ignored
     local topMenu = tes3ui.getMenuOnTop()
-    if topMenu and topMenu.id == GUI_ID.MenuQuantity then
+    if ignoreMenus[topMenu.id] then
         return
     end
     -- Check that inventory is open
