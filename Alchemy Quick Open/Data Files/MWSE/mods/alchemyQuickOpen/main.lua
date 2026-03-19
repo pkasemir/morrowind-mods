@@ -61,18 +61,22 @@ local function registerKeybindEvent(tes3event)
     state.registeredEvents[tes3event] = true
 end
 
+local function isValid(var)
+    return var ~= false and var ~= nil
+end
+
 local function onMenuEnter(e)
     if not isInventoryAvailable() then
         return
     end
 
-    if config.keybind.keyCode ~= false then
+    if isValid(config.keybind.keyCode) then
         registerKeybindEvent(tes3.event.keyUp)
     end
-    if config.keybind.mouseButton ~= false then
+    if isValid(config.keybind.mouseButton) then
         registerKeybindEvent(tes3.event.mouseButtonUp)
     end
-    if config.keybind.mouseWheel ~= false then
+    if isValid(config.keybind.mouseWheel) then
         registerKeybindEvent(tes3.event.mouseWheel)
     end
 end
